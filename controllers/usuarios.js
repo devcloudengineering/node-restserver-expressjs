@@ -96,12 +96,16 @@ const deleteUsuario = async (req, res = response) => {
 
   // const usuario = await Usuario.findByIdAndDelete(id);
   // para mantener integridad de los datos se recomienda manejar un campo de estado que haga la distincion si esta activo o no el usuario, se esta forma solo filtramos los que tengan estado true
-  const usuario = await Usuario.findByIdAndUpdate(id, { estado: false });
+  const ussuarioELiminado = await Usuario.findByIdAndUpdate(id, {
+    estado: false,
+  });
+  const { usuarioAutenticado } = req;
 
-  res.status(403).json({
+  res.status(200).json({
     ok: true,
     msg: "delete API - controlador",
-    usuario,
+    ussuarioELiminado,
+    usuarioAutenticado,
   });
 };
 
