@@ -24,6 +24,8 @@
             // Google Token: ID_TOKEN
             const body = { id_token: response.credential };
 
+            console.log('El token de Google es: ', response.credential)
+
             fetch('http://localhost:3000/api/auth/google', {
                 method: "POST", // Corrige de "POSRT" a "POST"
                 headers: {
@@ -33,14 +35,12 @@
             })
                 .then(resp => resp.json())
                 .then(data => {
-                    console.log(data);
                     localStorage.setItem('email', data.usuario.correo) // Muestra la respuesta del servidor
                 })
                 .catch(console.warn);
         }
         const button = document.getElementById('google_signout')
         button.onclick = () => {
-            console.log(google.accounts.id)
             google.accounts.id.disableAutoSelect()
 
             google.accounts.id.revoke(localStorage.getItem('email'), done => {
