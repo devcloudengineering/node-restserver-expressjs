@@ -85,6 +85,7 @@ const googleSingIn = async (req, res = response) => {
     res.status(200).json({
       usuario,
       token,
+      msg: "Login ok",
     });
   } catch (error) {
     console.log(error);
@@ -94,7 +95,19 @@ const googleSingIn = async (req, res = response) => {
   }
 };
 
+const renovarToken = async (req, res = response) => {
+  const { usuarioAutenticado } = req;
+
+  // Generar JWT
+  const token = await generarJWT(usuarioAutenticado.id);
+
+  res.json({
+    usuarioAutenticado,
+    token,
+  });
+};
 module.exports = {
   login,
   googleSingIn,
+  renovarToken,
 };

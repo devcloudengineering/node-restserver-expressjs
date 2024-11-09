@@ -2,11 +2,14 @@ const express = require("express");
 const cors = require("cors");
 const { dbConnection } = require("../database/config.js");
 const fileUpload = require("express-fileupload");
+const { socketController } = require("../sockets/controller.js");
 
 class Server {
   constructor() {
-    this.app = express();
+    this.app = express(); // Servidor de express
     this.port = process.env.PORT;
+    this.server = require("http").createServer(this.app); // Servidor de Sockets
+    this.io = require("socket.io")(this.server);
     this.path = {
       usuarios: "/api/usuarios",
       auth: "/api/auth",
@@ -23,8 +26,10 @@ class Server {
     this.middlewares();
 
     // Rutas de mi aplicacion
-
     this.routes();
+
+    // Sockets
+    this.sockets();
   }
 
   middlewares() {
@@ -57,8 +62,12 @@ class Server {
     this.app.use(this.path.uploads, require("../routes/uploads.js"));
   }
 
+  sockets() {
+    this.io.on("connection", (socket) => socketController(socket, this.io));
+  }
+
   listen() {
-    this.app.listen(this.port, () => {
+    this.server.listen(this.port, () => {
       console.log("Servidor REST escuchando en el puerto", this.port);
     });
   }
